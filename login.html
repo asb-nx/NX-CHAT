@@ -1,0 +1,125 @@
+
+<html>
+<head>
+    <title>NX CHAT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .chat-box {
+            padding: 10px;
+            border: 1px solid #ccc;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .chat-box p {
+            margin: 0 0 10px;
+        }
+        .chat-input {
+            display: flex;
+        }
+        .chat-input input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .chat-input input[type="submit"] {
+            padding: 10px;
+            background-color: #C70039;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+	    .nnx
+	{
+		color: solid red;
+		}
+        
+        
+    </style>
+</head>
+
+<script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-app.js"></script> 
+<script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-database.js"></script>
+
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyAt1RmW0k_xQ3rF4cA1du2ZcEHOizHXQCM",
+        authDomain: "nx-chat-abc.firebaseapp.com",
+        databaseURL: "https://nx-chat-abc-default-rtdb.firebaseio.com/",
+        projectId: "nx-chat-abc",
+        storageBucket: "nx-chat-abc.appspot.com",
+        messagingSenderId: "G-CCGKZVQSSY",
+        appId: "1:162543526476:web:d1c9aad1320b1c1c804ae9"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+var myName = prompt("Enter your name");
+	 var pass = prompt("Enter your pass");
+    
+
+</script>
+     
+<!-- create a form to send message -->
+    <div class="container">
+<div>
+	
+<script>
+    function sendMessage() {
+        // get message
+        var message = document.getElementById("message").value;
+ 
+        // save in database
+        firebase.database().ref("messages").push().set({
+            "sender": myName,
+            "message": message
+        });
+ 
+        // prevent form from submitting
+        return false;
+    }
+
+</script>
+    
+<!-- create a list -->
+<ul id="messages"></ul>
+     
+<script>
+    // listen for incoming messages
+    firebase.database().ref("messages").on("child_added", function (snapshot) {
+        var html = "";
+        // give each message a unique ID
+        html += "<li id='message-" + snapshot.key + "'>";
+        
+        if (snapshot.val().sender == myName) {
+           html += "<button data-id='" + snapshot.key + "' onclick='deleteMessage(this);'>";
+                
+        }
+        html += snapshot.val().sender + ": " + snapshot.val().message;
+        html += "</li>";
+ 
+        document.getElementById("messages").innerHTML += html;
+    });
+</script>
+
+<form onsubmit="return sendMessage();">
+    <input id="message" placeholder="Enter message" autocomplete="off">
+ <input type="submit" value="Send" >
+    
+  </form>
+  </div>
